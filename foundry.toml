@@ -10,3 +10,7 @@ libs = ['lib']
 gas_reports = ['*']
 
 fs_permissions = [{ access = "read", path = "./addresses"}, { access = "read", path = "./chainConfigs"}, { access = "read", path = "./package.json" }]
+
+[fmt]
+line_length = 80
+tab_width = 2
