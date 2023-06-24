@@ -10,7 +10,7 @@ import {NFTMetadataRenderer} from "../../src/utils/NFTMetadataRenderer.sol";
 import {DropMockBase} from "./DropMockBase.sol";
 import {IERC721Drop} from "../../src/interfaces/IERC721Drop.sol";
 import {ERC721Drop} from "../../src/ERC721Drop.sol";
-import {Test} from "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 
 contract SequentialMetadataRendererMock is SequentialMetadataRenderer {
   function provisionTokenInfoExternal(address target)
@@ -338,23 +338,24 @@ contract SequentialMetadataRendererTest is Test {
 
     infos[0] = SequentialMetadataRenderer.TokenEditionInfo({
       description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
-      imageURI: "https://ipfs.io/ipfs/bafkreierdgazvr3olgitxjhhspmb2dsyzaqti5nqegxb5rjoixzs6y6sc4",
+      imageURI: "ipfs://ipfs/bafkreierdgazvr3olgitxjhhspmb2dsyzaqti5nqegxb5rjoixzs6y6sc4",
       animationURI: ""
     });
 
     infos[1] = SequentialMetadataRenderer.TokenEditionInfo({
       description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
-      imageURI: "https://ipfs.io/ipfs/bafkreia7evclnh6kulq6lozxkepvhy6j54kxutsheump3gvypgrcykaube",
+      imageURI: "ipfs://bafkreia7evclnh6kulq6lozxkepvhy6j54kxutsheump3gvypgrcykaube",
       animationURI: ""
     });
 
     infos[2] = SequentialMetadataRenderer.TokenEditionInfo({
       description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
-      imageURI: "https://ipfs.io/ipfs/bafkreiepes37ey3cntyuyrhjyht5qjre4ub7tojxif3x66bf2gmnexviqi",
+      imageURI: "ipfs://bafkreiepes37ey3cntyuyrhjyht5qjre4ub7tojxif3x66bf2gmnexviqi",
       animationURI: ""
     });
 
     bytes memory data = abi.encode(startTokenIds, infos);
+    console.logBytes(data);
 
     liveContract.setMetadataRenderer(
       IMetadataRenderer(address(sequentialRenderer)), data
