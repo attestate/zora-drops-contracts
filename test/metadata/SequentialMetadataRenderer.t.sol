@@ -324,4 +324,65 @@ contract SequentialMetadataRendererTest is Test {
     assertEq(oldTokenInfo.imageURI, infos[0].imageURI);
     assertEq(oldTokenInfo.animationURI, infos[0].animationURI);
   }
+
+  function test_initializeWithDataAndCheckTokenURIs() public {
+    vm.startPrank(0xee324c588ceF1BF1c1360883E4318834af66366d);
+
+    uint256[] memory startTokenIds = new uint256[](3);
+    startTokenIds[0] = 1;
+    startTokenIds[1] = 49;
+    startTokenIds[2] = 85;
+
+    SequentialMetadataRenderer.TokenEditionInfo[] memory infos =
+      new SequentialMetadataRenderer.TokenEditionInfo[](3);
+
+    infos[0] = SequentialMetadataRenderer.TokenEditionInfo({
+      description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
+      imageURI: "https://ipfs.io/ipfs/bafkreierdgazvr3olgitxjhhspmb2dsyzaqti5nqegxb5rjoixzs6y6sc4",
+      animationURI: ""
+    });
+
+    infos[1] = SequentialMetadataRenderer.TokenEditionInfo({
+      description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
+      imageURI: "https://ipfs.io/ipfs/bafkreia7evclnh6kulq6lozxkepvhy6j54kxutsheump3gvypgrcykaube",
+      animationURI: ""
+    });
+
+    infos[2] = SequentialMetadataRenderer.TokenEditionInfo({
+      description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
+      imageURI: "https://ipfs.io/ipfs/bafkreiepes37ey3cntyuyrhjyht5qjre4ub7tojxif3x66bf2gmnexviqi",
+      animationURI: ""
+    });
+
+    bytes memory data = abi.encode(startTokenIds, infos);
+
+    liveContract.setMetadataRenderer(
+      IMetadataRenderer(address(sequentialRenderer)), data
+    );
+
+    vm.stopPrank();
+    vm.startPrank(address(liveContract));
+    for (uint256 i = 1; i <= 107; i++) {
+      string memory expectedUri = NFTMetadataRenderer.createMetadataEdition({
+        name: liveContract.name(),
+        description: infos[getInfoIndex(i)].description,
+        imageURI: infos[getInfoIndex(i)].imageURI,
+        animationURI: infos[getInfoIndex(i)].animationURI,
+        tokenOfEdition: i,
+        editionSize: 0
+      });
+      string memory uri = sequentialRenderer.tokenURI(i);
+      assertEq(uri, expectedUri);
+    }
+  }
+
+  function getInfoIndex(uint256 tokenId) internal pure returns (uint256) {
+    if (tokenId <= 48) {
+      return 0;
+    } else if (tokenId <= 84) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
 }
