@@ -338,7 +338,7 @@ contract SequentialMetadataRendererTest is Test {
 
     infos[0] = SequentialMetadataRenderer.TokenEditionInfo({
       description: unicode"Go to https://kiwinews.xyz/ for your daily dose of kiwi 🥝",
-      imageURI: "ipfs://ipfs/bafkreierdgazvr3olgitxjhhspmb2dsyzaqti5nqegxb5rjoixzs6y6sc4",
+      imageURI: "ipfs://bafkreierdgazvr3olgitxjhhspmb2dsyzaqti5nqegxb5rjoixzs6y6sc4",
       animationURI: ""
     });
 
