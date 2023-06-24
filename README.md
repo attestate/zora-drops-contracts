@@ -1,55 +1,23 @@
-# Zora NFT Drop Media Contracts
+# SequentialMetadataRenderer for Zora NFT Drop Media Contracts
 
-### How do I integrate these in my own site?
-
-1. Use wagmi/ethers/web3.js with the given artifacts (in the node package) or typechain.
-2. Use our subgraph to find media / metadata information (goerli: https://api.thegraph.com/subgraphs/name/iainnash/erc721drop-goerli) (rinkeby: https://thegraph.com/hosted-service/subgraph/iainnash/erc721droprinkeby) (mainnet: https://thegraph.com/hosted-service/subgraph/iainnash/zora-editions-mainnet)
-3. For your edition, call `address(edition).purchase(quantity, {value: price * quantity})`. Price and availability can be found from the subgraph or from the blockchain with the `saleInfo` call.
-4. Find the transfer() or sale() event from the transaction receipt to get the ID that the user minted.
-5. ✨
-
-### Features these contracts support:
-
-1. ETH NFT sales
-2. Modular admin access and minting controls
-3. ERC2981 on-chain royalties
-4. Presale merkle trees
-5. On-chain modular rendering architecture
-6. ERC721A Gas savings / linear mint
-7. Limit mints per address when purchasing
-8. Allows for new features with opt-in gated user upgrades
-9. Allows for time-based open mints
-10. Includes a platform royalty fee mechanism
-11. Can admin mint NFTs to addresses and airdrop to lists of addresses
-
-### What are these contracts?
-1. `ERC721Drop`
-   Each drop is a unique contract.
-   This allows for easy royalty collection, clear ownership of the collection, and your own contract 🎉
-2. `ZoraNFTCreatorV1`
-   Gas-optimized factory contract allowing you to easily + for a low gas transaction create your own drop contract.
-3. `DropMetadataRenderer`
-   A flexible metadata renderer architecture that allows for centralised and IPFS metadata group roots to be rendered.
-4. `EditionsMetadataRenderer`
-   A partially on-chain renderer for editions that encodes name and description on-chain with media metadata off-chain.
-5. `UpgradeGate`
-   A registry allowing for upgrades to be allowed for child contracts by `zora.eth`.
-   
-### Flexibility and safety
-
-All drops contracts are wholly owned by their creator and allow for extensibility with rendering and minting.
-The root drops contract can be upgraded to allow for product upgrades with new contracts and Zora gates allowed upgrade paths
-for deployed contracts to be upgraded by the users of the platform to opt into new features.
-
-The metadata renderer abstraction allows these drops contracts to power a variety of on-chain powered projects and also.
-   
-### Local development
-
-1. Install [Foundry](https://github.com/foundry-rs/foundry)
-1. `yarn install`
-1. `git submodule init && git submodule update`
-1. `yarn build`
-
-### Bug Bounty
-5 ETH for any critical bugs that could result in loss of funds.
-Rewards will be given for smaller bugs or ideas.
+- This repository is a fork of ourzora/zora-drops-contracts
+- However, `src/metadata/SequentialMetadataRenderer.sol` and
+  `test/metadata/SequentialMetadataRenderer.t.sol` are a modified version of
+  EditionMetadataRenderer.
+- They allow an initializer to set specific `MediaURIs` for a range of
+  `tokenIds`, e.g. `tokenId=1-10` could have
+  `imageURI=https://host.com/firstimage.jpg` whereas `tokenId=11-20` could have
+  `imageURI=https://host.com/anotherimage.jpg`.
+- We implemented this to retroactively change our [Kiwi News
+  NFT](https://zora.co/collect/eth:0xebb15487787cbf8ae2ffe1a6cca5a50e63003786)
+  minter's badges as we had frequently changed the imageURI but since Zora then
+  refreshes the entire collection and not just the newly minted NFTs.
+- We used `ERC721Drop.setMetadataRender` with a custom byte sequence to install
+  the new metadata renderer (you can find the byte sequence generator as a unit
+  test).
+- From now on, our idea is to update the collection's `imageURI` more often as
+  a way to promote our NFT collection by releasing new collectable badges every
+  now and then
+- Our contract is deployed at
+  [eth:0x643198A532A1D5DE706E18E324234d9A6a70562A](https://etherscan.io/address/0x643198A532A1D5DE706E18E324234d9A6a70562A#code)
+- License: GPL-3.0-only
